@@ -1,14 +1,14 @@
-<tabset>
-  <tab heading="Latest report" active="events.mode.latest" select="events.setMode('latest')"></tab>
-  <tab heading="Date range" active="events.mode.daterange" select="events.setMode('daterange')">
+<uib-tabset>
+  <uib-tab heading="Latest report" active="events.mode.latest" select="events.setMode('latest')"></uib-tab>
+  <uib-tab heading="Date range" active="events.mode.daterange" select="events.setMode('daterange')">
     <div class="row">
       <div class="col-md-6">
         <div class="form-group">
           <label for="date-from">Date from:</label>
           <div class="input-group">
-            <input datepicker-popup type="text" id="date-from" class="form-control" ng-model="dateFrom" ng-change="events.setFilters()" is-open="dateFromOpen" close-text="Close">
+            <input uib-datepicker-popup type="text" id="date-from" class="form-control" ng-model="dateFrom" ng-change="events.setFilters()" is-open="dateFromOpen" close-text="Close">
             <span class="input-group-btn">
-              <button type="button" class="btn btn-default" ng-disabled="latestReport" ng-click="events.toggleDatePicker($event,'dateFromOpen')"><span class="glyphicon glyphicon-calendar"></span></button>
+              <button type="button" class="btn btn-default" ng-click="events.openDatePicker($event,'dateFromOpen')"><span class="glyphicon glyphicon-calendar"></span></button>
             </span>
           </div>
         </div>
@@ -17,22 +17,22 @@
         <div class="form-group">
           <label for="date-to">Date to:</label>
           <div class="input-group">
-            <input datepicker-popup type="text" id="date-to" class="form-control" ng-model="dateTo" ng-change="events.setFilters()" is-open="dateToOpen" close-text="Close">
+            <input uib-datepicker-popup type="text" id="date-to" class="form-control" ng-model="dateTo" ng-change="events.setFilters()" is-open="dateToOpen" close-text="Close">
             <span class="input-group-btn">
-              <button type="button" class="btn btn-default" ng-disabled="latestReport" ng-click="events.toggleDatePicker($event,'dateToOpen')"><span class="glyphicon glyphicon-calendar"></span></button>
+              <button type="button" class="btn btn-default" ng-click="events.openDatePicker($event,'dateToOpen')"><span class="glyphicon glyphicon-calendar"></span></button>
             </span>
           </div>
         </div>
       </div>
     </div>
-  </tab>
-  <tab heading="Single report" active="events.mode.report" select="events.setMode('report')">
+  </uib-tab>
+  <uib-tab heading="Single report" active="events.mode.report" select="events.setMode('report')">
     <div class="form-group">
       <label for="report-hash">Report hash</label>
       <input type="text" class="form-control" id="report-hash" ng-model="reportHash" placeholder="Report hash">
     </div>
-  </tab>
-</tabset>
+  </uib-tab>
+</uib-tabset>
 
 <div class="row" style="margin-top: 10px">
   <div class="col-md-4">
@@ -126,4 +126,4 @@
   </tbody>
 </table>
 
-<pagination ng-if="numItems > 50" ng-change="changePage(page)" ng-model="page" num-pages="numPages" items-per-page="50"  boundary-links="numItems > 250" max-size="5" total-items="numItems" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+<uib-pagination ng-if="numItems > 50" ng-change="changePage(page)" ng-model="page" num-pages="numPages" items-per-page="50"  boundary-links="numItems > 250" max-size="5" total-items="numItems" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">

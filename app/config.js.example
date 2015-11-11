@@ -25,8 +25,13 @@ UNRESPONSIVE_HOURS = 2;
 // Different types will be displayed with different colors
 DASHBOARD_PANELS = [
   {
-    name: 'Unresponsive nodes',
+    name: 'Failing nodes',
     type: 'danger',
+    query: '#node.latest_report_status = failed'
+  },
+  {
+    name: 'Unresponsive nodes',
+    type: 'warning',
     query: '#node.report_timestamp < @"now - 2 hours"'
   },
   {

@@ -3,7 +3,7 @@ require('angular-route')
 require('angular-animate')
 require('angular-google-chart')
 require('angular-moment')
-require('angular-bootstrap')
+require('angular-bootstrap-npm')
 
 angular.module('app', [
   'ngRoute'

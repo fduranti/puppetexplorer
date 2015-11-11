@@ -2,7 +2,7 @@ angular.module('app').controller 'EventsCtrl', class
   constructor: (@$scope, @$rootScope, @$location, @PuppetDB) ->
     @$scope.$on('queryChange', @reset)
     @$scope.$on('pageChange', @fetchEvents)
-    @$scope.$on('$locationChangeSuccess', @setFields)
+    #@$scope.$on('$locationChangeSuccess', @setFields)
     @$scope.$on('filterChange', @reset)
     @$scope.perPage = 50
     @mode = {}
@@ -12,16 +12,14 @@ angular.module('app').controller 'EventsCtrl', class
   setFields: (event, exclude) =>
     @mode.current = @$location.search().mode || 'latest'
     @mode[@mode.current] = true
+    @$scope.page = @$location.search().page
     @$scope.reportHash = @$location.search().report
-    @$scope.dateFrom = @$location.search().date_from || moment.utc().format('YYYY-MM-DD')
-    @$scope.dateTo = @$location.search().date_to || moment.utc().format('YYYY-MM-DD')
+    @$scope.dateFrom = new Date(@$location.search().date_from)
+    @$scope.dateTo = new Date(@$location.search().date_to)
     @reset(event, exclude)
 
   reset: (event, exclude) =>
-    if event && event.name == 'pageChange'
-      console.log(event)
-      @setFields()
-    @$location.search('page', null)
+    console.log event
     @$scope.numItems = undefined
     @fetchEvents()
     @fetchContainingClasses() unless exclude == 'containing_class'
@@ -31,15 +29,19 @@ angular.module('app').controller 'EventsCtrl', class
   # Switch mode to 'latest' or 'report'
   # either vieeing latest report of a specified report
   setMode: (mode) ->
+    return if @mode.current == mode
     @mode.current = mode
     @$location.search('mode', mode)
-    @setFilters()
+    @$location.search('page', null)
+    @$rootScope.$broadcast('filterChange')
 
   # Public: Set URL to match currently selected filters
-  setFilters: () ->
-    @$location.search('report', @$scope.reportHash)
+  setFilters: (foo) ->
+    console.log foo
+    console.log @$scope.dateFrom
     @$location.search('date_from', moment(@$scope.dateFrom).format('YYYY-MM-DD'))
     @$location.search('date_to', moment(@$scope.dateTo).format('YYYY-MM-DD'))
+    @$location.search('report', @$scope.reportHash)
     @$rootScope.$broadcast('filterChange')
 
   # Public: Create a event query for current filters
@@ -96,23 +98,6 @@ angular.module('app').controller 'EventsCtrl', class
   # Returns: `undefined`
   toggleRow: (event) ->
     event.show = !event.show
-
-  fetchContainingClasses: =>
-    @drawChart('containingChart', 'Containing class')
-    @PuppetDB.parseAndQuery('event-counts',
-      @$location.search().query
-      @createEventQuery('containing_class')
-      {
-        summarize_by: 'containing_class'
-      }
-      (data, total) =>
-        chartData = []
-        for item in data
-          key = item.subject.title || 'none'
-          value = item.failures + item.successes + item.noops + item.skips
-          chartData.push [key, value]
-        @drawChart('containingChart', 'Containing class', chartData)
-    )
 
   fetchContainingClasses: =>
     @drawChart('containingChart', 'Containing class')
@@ -251,10 +236,8 @@ angular.module('app').controller 'EventsCtrl', class
       if row
         chart.getChart().setSelection([{row: row - 1}])
 
-  toggleDatePicker: ($event, name) ->
-    $event.preventDefault()
-    $event.stopPropagation()
-    @$scope[name] = !@$scope[name]
+  openDatePicker: (event, name) ->
+    @$scope[name] = true
 
   # Switch to events view for a specified report
   selectReport: (report) ->
